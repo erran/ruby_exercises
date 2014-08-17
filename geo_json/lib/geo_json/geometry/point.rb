@@ -4,31 +4,26 @@ module GeoJSON
       def self.from_json(json)
         attributes = JSON.parse(json)
         coordinates = attributes['coordinates']
-        # TODO: fail if there are more than one pair of coordinates
 
+        # TODO: fail if there are more than one pair of coordinates
         new(*coordinates.values_at(0, 1))
       end
 
       def initialize(x, y)
-        self.coordinates = x, y
+        self.coordinates = [x, y]
       end
 
       def coordinates
         [@x, @y]
       end
 
-      def coordinates=(x, y)
-        @x, @y = x, y
+      def coordinates=(coordinates)
+        @x, @y = *coordinates
       end
 
-      def to_geojson
-        {
-          coordinates: coordinates,
-          type: 'Point'
-        }.to_json
+      def ==(other)
+        coordinates == other.coordinates
       end
-
-      alias_method :to_json, :to_geojson
     end
   end
 end

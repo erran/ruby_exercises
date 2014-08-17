@@ -2,28 +2,22 @@ require_relative './spec_helper'
 
 describe GeoJSON::Feature do
   describe '.from_json' do
-    let(:geometry_json) do
-      {
-        type: 'Point',
-        coordinates: [123.4, 45.6]
-      }.to_json
+    let(:example_geometry) do
+      { type: 'Point', coordinates: [125.6, 10.1] }
     end
 
-    let(:feature_json) do
-      {
-        type: 'Feature',
-        geometry: geometry_json,
-        properties: {
-          name: 'Example Feature'
-        }
-      }.to_json
+    let(:example_feature) do
+      { type: 'Feature', geometry: example_geometry, properties: { name: 'Dinagat Islands' } }
     end
+
+    subject { GeoJSON::Feature.from_json(example_feature.to_json) }
 
     it 'serializes a GeoJSON::Feature from a GeoJSON string' do
-      feature = GeoJSON::Feature.from_json(feature_json)
-      expect(feature.geometry).to eq(geometry_json)
-      expect(feature.properties).to include('name')
-      expect(feature.properties['name']).to eq('Example Feature')
+      expect(subject.properties).to include('name')
+      expect(subject.properties).to match('name' => 'Dinagat Islands')
+
+      expected_geometry = GeoJSON::Geometry::Point.from_json(example_geometry.to_json)
+      expect(subject.geometry).to eq(expected_geometry)
     end
   end
 end
